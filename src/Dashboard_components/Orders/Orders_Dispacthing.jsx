@@ -1,70 +1,55 @@
 import React, { useEffect, useState } from 'react'
 import DropDown from './DropDown';
+import axios from 'axios';
+import { number } from 'zod';
 
 function Orders_Dispacthing() {
-    const data = [
-        {
-            OrderDate: "12 July, 2023",
-            OrderNo: "#12q89",
-            PurchasedBy: "Online",
-            PaymentMethod: "COD",
-            Amount: "₹10,125",
-            DeliverySatatus: "In Packing",
-            Cell: "+92136846981",
+    // const [dlt_order, set_order_dlt] = useState()
+    const [order_recieved_data, set_order_recieved_data] = useState([])
+    useEffect(() => {
+        axios.get('http://localhost:4000/order_recieved')
+            .then((res) => {
 
-        },
-        {
-            OrderDate: "12 July, 2023",
-            OrderNo: "#29a36",
-            PurchasedBy: "Online",
-            PaymentMethod: "JazzCash",
-            Amount: "₹95.5",
-            DeliverySatatus: "Ware house",
-            Cell: "+92367889741",
+                const order_recieved_data = res.data;
+                // console.log(order_recieved_data[0]);
+                set_order_recieved_data(order_recieved_data)
 
-        },
-        {
-            OrderDate: "12 July, 2023",
-            OrderNo: "#12q89",
-            PurchasedBy: "Online",
-            PaymentMethod: "COD",
-            Amount: "₹10,125",
-            DeliverySatatus: "In Packing",
-            Cell: "+92136846981",
+                // console.log(typeof order_recieved_data[0].Order_Details.order_id);
 
-        },
-        {
-            OrderDate: "12 July, 2023",
-            OrderNo: "#29a36",
-            PurchasedBy: "Online",
-            PaymentMethod: "JazzCash",
-            Amount: "₹95.5",
-            DeliverySatatus: "Ware house",
-            Cell: "+92367889741",
 
-        },
-        {
-            OrderDate: "12 July, 2023",
-            OrderNo: "#12q89",
-            PurchasedBy: "Online",
-            PaymentMethod: "COD",
-            Amount: "₹10,125",
-            DeliverySatatus: "In Packing",
-            Cell: "+92136846981",
+            }).catch((err) => {
+                console.log(err);
 
-        },
-        {
-            OrderDate: "12 July, 2023",
-            OrderNo: "#29a36",
-            PurchasedBy: "Online",
-            PaymentMethod: "JazzCash",
-            Amount: "₹95.5",
-            DeliverySatatus: "Ware house",
-            Cell: "+92367889741",
+            })
 
-        },
+    }, [])
+    function order_dltr_fun(id) {
+        // set_order_dlt(id)
+        axios.delete('http://localhost:4000/order_delete', {
+            data: { order_id: id }
+        }).then((res) => {
 
-    ];
+            alert(
+                `Order delted: ${res} `
+
+            )
+        }).catch((err) => {
+            alert(`Error while deleting: ${err} `
+            )
+        })
+    }
+
+    function calculateDiscount(actual_price, discount) {
+        let originalPrice = Number(actual_price)
+        let discounted = Number(discount)
+
+        const discountAmount = (discounted / 100) * originalPrice;
+        const finalPrice = originalPrice - discountAmount;
+
+        return finalPrice;
+    }
+
+
 
     return (
         <>
@@ -98,36 +83,59 @@ function Orders_Dispacthing() {
                                     <th className="px-4 font-light tracking-wide py-2">Order Date</th>
                                     <th className="px-4  font-light tracking-wide py-2">Order No</th>
                                     <th className="px-4  font-light tracking-wide py-2">Cell NO</th>
-                                    <th className="px-4 font-light tracking-wide  py-2">Purchasing Method</th>
                                     <th className="px-4 font-light tracking-wide  py-2">Payment Method</th>
+                                    <th className="px-4 font-light tracking-wide  py-2">Discount</th>
                                     <th className="px-4  font-light tracking-wide py-2">Total amount</th>
                                     <th className="px-4  font-light tracking-wide py-2">Delievery Status</th>
+                                    <th className="px-4  font-light tracking-wide py-2">Cancel order</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {data.map((row, index) => (
-                                    <tr
+                                {order_recieved_data.map((row, index) => (
+
+
+                                    < tr
                                         key={index}
                                         className="border-b  border-gray-200 hover:bg-gray-50 pt-4"
                                     >
-                                        <td className="px-4 text-[#146EB4] py-2">{row.OrderDate}</td>
+                                        <td className="px-4 text-[#146EB4] py-2">{row.Order_Details.order_Date}</td>
                                         <td className="px-4 py-2">
                                             <span className={`font-bold ${row.statusColor}`}>
-                                                {row.OrderNo}
+                                                {row.Order_Details.order_id}
                                             </span>
                                         </td>
-                                        <td className="px-4 py-2">{row.Cell}</td>
-                                        <td className="px-4 py-2">{row.PurchasedBy}</td>
-                                        <td className="px-4 py-2">{row.PaymentMethod}</td>
-                                        <td className="px-4 py-2">{row.Amount}</td>
-                                        <DropDown />
+                                        <td className="px-4 py-2">{row.Orderer_Details.orderer_Number}</td>
+                                        <td className="px-4 py-2">{row.Order_Details.order_Payemnt_type}</td>
+                                        <td className="px-4 py-2">{
+
+                                            row.Order_Details.order_Discount
+
+
+
+                                        }
+                                            %</td>
+                                        <td className="px-4 py-2" >{
+
+                                            calculateDiscount(row.Order_Details.order_Amount, row.Order_Details.order_Discount)
+                                        }</td>
+                                        <td className="px-4 py-2">
+                                            {/* <button className='bg-amber-300'>Cancel This Order</button> */}
+                                            <DropDown id={row.Order_Details.order_id} />
+                                        </td>
+                                        <td className="px-4 py-2">
+                                            <button className='bg-[#a8a8a8] p-2 cursor-pointer'
+                                                onClick={() => {
+                                                    order_dltr_fun(row.Order_Details.order_id)
+                                                }}
+                                            >Cancel This Order</button>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
                         </table>
                     </div>
                 </div>
-            </div>
+            </div >
         </>
     )
 }

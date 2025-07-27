@@ -1,14 +1,15 @@
 import React, { memo, useCallback, useEffect, useMemo, useState } from 'react'
 import { Button, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
-function DropDown() {
+import axios from 'axios'
+function DropDown({ id }) {
+    // console.log(id);
+
     const [Status, set_Status] = useState("On PickUp")
     const [color, set_color] = useState("#DC2626")
+    // const [id, set_id] = useState()
     const [droper, setDroper] = useState(false)
-    const [Disable, setDisable] = useState(true)
-    const [booleanVal, setboolean] = useState(false)
     const [OrderAccepte, set_OrderAccepted0] = useState(false)
-
     const [Delievery_STATUS, set_Delievery_STATUS] = useState([
         {
             Title: "On PickUp",
@@ -35,14 +36,24 @@ function DropDown() {
             ,
             Disable: true
         }])
+    function status_fun() {
+        axios.post('http://localhost:4000/delievery_status_api/current_status', {
+            item_id: id,
+        }).then((res) => {
+            console.log(res);
 
+        }).catch((err) => {
+            console.log(err);
+
+        })
+    }
 
     let key_fn = (key) => {
         let keyInc = key + 1;
         if (key == undefined) {
             set_Delievery_STATUS((prev) => {
                 const array = [...prev]
-                console.log("ARRAY", array);
+                // console.log("ARRAY", array);
                 array[0].Disable = false
                 array[0].Disable = "Done";
 
@@ -70,12 +81,15 @@ function DropDown() {
         key_fn()
     }, [Status])
 
+    // ------------------------------
+    function status_setter() {
+        axios.post('/delievery_statis', {
+            OrderAccepted: OrderAccepte
+        })
+    }
+
     return (
         <>
-
-
-
-
             {
                 OrderAccepte ?
                     <div style={{ backgroundColor: `${color}` }}
@@ -106,7 +120,8 @@ function DropDown() {
                                                                             setDroper(!droper),
                                                                             set_color(v.st_Color),
                                                                             key_fn(i),
-                                                                            setboolean(true)
+                                                                            status_fun()
+                                                                            // setboolean(true)
                                                                         )
                                                                     }
                                                                     disabled={v.Disable}
