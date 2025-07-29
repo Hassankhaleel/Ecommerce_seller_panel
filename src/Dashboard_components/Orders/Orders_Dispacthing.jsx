@@ -3,22 +3,61 @@ import DropDown from './DropDown';
 import axios from 'axios';
 import { number } from 'zod';
 
-function Orders_Dispacthing() {
+function Orders_Dispacthing(orde_data) {
     // const [dlt_order, set_order_dlt] = useState()
     const [order_recieved_data, set_order_recieved_data] = useState([])
+    const [order_acceptance, set_order_accepted] = useState(false)
+    const [stored_status, store_delievery_status] = useState({
+        order_status: false
+    })
+    // console.log(stored_status);
+
+    const [Delievery_STATUS, set_Delievery_STATUS] = useState([
+        {
+            Title: "Accepting",
+            st_Color: "#DC7585",
+            Disable: true,
+
+
+        },
+        {
+            Title: "On PickUp",
+            st_Color: "#DC2626",
+            Disable: true,
+
+
+        },
+        {
+            Title: "On Packing",
+            st_Color: "#F59E0B"
+            ,
+            Disable: true
+        },
+        {
+            Title: "Out For Deliever",
+            st_Color: "#EA580C"
+            ,
+            Disable: true
+        },
+        {
+            Title: "Delieverd",
+            st_Color: "#65A30D"
+            ,
+            Disable: true
+        }])
     useEffect(() => {
         axios.get('http://localhost:4000/order_recieved')
             .then((res) => {
 
                 const order_recieved_data = res.data;
-                // console.log(order_recieved_data[0]);
+                // console.log(order_recieved_data);
                 set_order_recieved_data(order_recieved_data)
 
                 // console.log(typeof order_recieved_data[0].Order_Details.order_id);
 
 
             }).catch((err) => {
-                console.log(err);
+                // console.log(err);
 
             })
 
@@ -53,12 +92,11 @@ function Orders_Dispacthing() {
 
     return (
         <>
-            <div className='bg-[#1e2640]  w-max mx-auto p-5 px-8  shadow mt-4 flex justify-center items-center'>
-                <h1 className='font-[Poppins] text-2xl text-white '>Orders Recieved </h1>
-            </div>
+
+
 
             <div className='m-5'>
-                <div className="w-[30%] mb-2">
+                <div className="w-[50%] mb-2">
                     <div className="flex items-center rounded-md  pl-3 outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600">
                         <div className="shrink-0 text-base text-gray-500 select-none sm:text-sm/6">
                             <i className="fa-solid fa-magnifying-glass"></i>
@@ -74,6 +112,29 @@ function Orders_Dispacthing() {
 
                         </div>
                     </div>
+
+                    {
+                        Delievery_STATUS.map((val, i) => {
+                            return (
+                                <button key={i} value={`${val.Title}`} style={{
+                                    backgroundColor: `${val.st_Color}`,
+
+                                }} className='p-2  cursor-pointer text-white shadow m-2 '
+                                    onClick={() => {
+                                        store_delievery_status(() => {
+                                            stored_status.order_status = val.Disable
+                                        })
+
+
+                                    }}>
+                                    {
+                                        val.Title
+                                    }
+                                </button>
+
+                            )
+                        })
+                    }
                 </div>
                 <div className='shadow border bg-white ]'>
                     <div className="overflow-x-auto">
@@ -91,46 +152,48 @@ function Orders_Dispacthing() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {order_recieved_data.map((row, index) => (
+                                {
+                                    order_recieved_data.map((row, index) => (
 
 
-                                    < tr
-                                        key={index}
-                                        className="border-b  border-gray-200 hover:bg-gray-50 pt-4"
-                                    >
-                                        <td className="px-4 text-[#146EB4] py-2">{row.Order_Details.order_Date}</td>
-                                        <td className="px-4 py-2">
-                                            <span className={`font-bold ${row.statusColor}`}>
-                                                {row.Order_Details.order_id}
-                                            </span>
-                                        </td>
-                                        <td className="px-4 py-2">{row.Orderer_Details.orderer_Number}</td>
-                                        <td className="px-4 py-2">{row.Order_Details.order_Payemnt_type}</td>
-                                        <td className="px-4 py-2">{
+                                        < tr
+                                            key={index}
+                                            className="border-b  border-gray-200 hover:bg-gray-50 pt-4"
+                                        >
+                                            <td className="px-4 text-[#146EB4] py-2">{row.Order_Details.order_Date}</td>
+                                            <td className="px-4 py-2">
+                                                <span className={`font-bold ${row.statusColor}`}>
+                                                    {row.Order_Details.order_id}
+                                                </span>
+                                            </td>
+                                            <td className="px-4 py-2">{row.Orderer_Details.orderer_Number}</td>
+                                            <td className="px-4 py-2">{row.Order_Details.order_Payemnt_type}</td>
+                                            <td className="px-4 py-2">{
 
-                                            row.Order_Details.order_Discount
+                                                row.Order_Details.order_Discount
 
 
 
-                                        }
-                                            %</td>
-                                        <td className="px-4 py-2" >{
+                                            }
+                                                %</td>
+                                            <td className="px-4 py-2" >{
 
-                                            calculateDiscount(row.Order_Details.order_Amount, row.Order_Details.order_Discount)
-                                        }</td>
-                                        <td className="px-4 py-2">
-                                            {/* <button className='bg-amber-300'>Cancel This Order</button> */}
-                                            <DropDown id={row.Order_Details.order_id} />
-                                        </td>
-                                        <td className="px-4 py-2">
-                                            <button className='bg-[#a8a8a8] p-2 cursor-pointer'
-                                                onClick={() => {
-                                                    order_dltr_fun(row.Order_Details.order_id)
-                                                }}
-                                            >Cancel This Order</button>
-                                        </td>
-                                    </tr>
-                                ))}
+                                                calculateDiscount(row.Order_Details.order_Amount, row.Order_Details.order_Discount)
+                                            }</td>
+                                            <td className="px-4 py-2">
+                                                {/* <button className='bg-amber-300'>Cancel This Order</button> */}
+                                                <DropDown id={row.Order_Details.order_id} order_acceptance={order_acceptance} sharing_status={stored_status} />
+                                            </td>
+                                            <td className="px-4 py-2">
+                                                <button className='bg-[#a8a8a8] p-2 cursor-pointer'
+                                                    onClick={() => {
+                                                        order_dltr_fun(row.Order_Details.order_id)
+                                                    }}
+                                                >Cancel This Order</button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                }
                             </tbody>
                         </table>
                     </div>

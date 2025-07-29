@@ -19,7 +19,8 @@ const order_schema = mongoose.Schema({
         order_id: { type: String, required: true },
         order_dispacting_time: { type: String, required: true },
         order_current_status: { type: String, required: true },
-
+        order_payment_id: { type: String, required: true },
+        order_paid_ammount: { type: String, required: true },
     }
 })
 
