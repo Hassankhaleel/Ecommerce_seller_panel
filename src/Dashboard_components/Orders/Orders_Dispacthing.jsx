@@ -46,11 +46,11 @@ function Orders_Dispacthing(orde_data) {
             Disable: true
         }])
     useEffect(() => {
-        axios.get('http://localhost:4000/order_recieved')
+        axios.post('http://localhost:4000/')
             .then((res) => {
 
                 const order_recieved_data = res.data;
-                // console.log(order_recieved_data);
+                console.log(order_recieved_data);
                 set_order_recieved_data(order_recieved_data)
 
                 // console.log(typeof order_recieved_data[0].Order_Details.order_id);
@@ -92,9 +92,6 @@ function Orders_Dispacthing(orde_data) {
 
     return (
         <>
-
-
-
             <div className='m-5'>
                 <div className="w-[50%] mb-2">
                     <div className="flex items-center rounded-md  pl-3 outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600">

@@ -9,19 +9,24 @@ function Order_Main() {
 
   const Navigate = useNavigate()
   const [mnth, set_mnth] = useState("")
-  const [orders_by_payment_type, set_orders_by_payment_type] = useState("")
+  const [orders_payment_type, set_orders_by_payment_type] = useState("")
+  console.log(orders_payment_type, "asdasdasd");
+
   const paragraphs = [
     {
       Payment_method: "COD Drders ",
+      Type: "Cod",
       Route: 'Cod_payments'
     },
     {
       Payment_method: "Full Online Payments Orders",
+      Type: "Full",
       Route: 'Full_payments'
 
     },
     {
       Payment_method: "Advacne Online Payments Orders",
+      Type: "Advanced",
       Route: 'less_payments'
 
     }
@@ -33,15 +38,17 @@ function Order_Main() {
     "September", "October", "November", "December"
   ];
   function handleClick(orders_by_payment_type) {
-    alert(orders_by_payment_type)
+    // alert(orders_payment_type)
     axios.post('http://localhost:4000/orders_by_payment_type', {
       Order_payment_type: orders_by_payment_type
     })
       .then((res) => {
 
-        const pyment_type = res;
-        console.log("pyment_type", pyment_type);
+        const pyment_type = res.data;
+        console.log(pyment_type, "tetsing");
+        set_orders_by_payment_type(pyment_type)
 
+        // console.log(orders_by_payment_type);
 
       }).catch((err) => {
         console.log(err, "err");
@@ -131,7 +138,7 @@ function Order_Main() {
                 setActiveIndex(index)
                 Navigate(text.Route)
                 // set_orders_by_payment_type(text.Payment_method)
-                handleClick(text.Payment_method)
+                handleClick(text.Type)
               }}
             >
               <p className="font-light opacity-70 font-[Poppins] text-[18px]">{text.Payment_method}</p>
@@ -144,6 +151,7 @@ function Order_Main() {
           ))}
         </div>
         <div>
+
 
         </div>
       </div>
