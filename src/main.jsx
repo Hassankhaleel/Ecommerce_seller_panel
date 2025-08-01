@@ -8,10 +8,12 @@ import './index.css'
 import App from './App.jsx'
 import { BrowserRouter, Route, Router } from 'react-router-dom'
 import Routers from './Routers/Dashboard_routers/Routers.jsx'
-import Context_provider_api from "./Context_api/ContextAPi";
+import { sotre } from "./Redux/Rediux_main";
 
+import { Provider } from 'react-redux'
 createRoot(document.getElementById('root')).render(
-  <Context_provider_api>
+
+  <Provider store={sotre}>
     <Routers>
       <StrictMode>
         <Theme>
@@ -19,7 +21,7 @@ createRoot(document.getElementById('root')).render(
         </Theme>
       </StrictMode>,
     </Routers>
-  </Context_provider_api>
+  </Provider>
 
 
 )

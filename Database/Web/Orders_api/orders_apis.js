@@ -14,8 +14,10 @@ app.use(express.json())
 // ----APis for getting orders base on payemnt_type
 app.post('/orders_by_payment_type', async (req, res) => {
     let payment_type = req.body.Order_payment_type
-    let payemnt_type_rslt = await Orders_model.find({ "Order_Details.order_Payemnt_type": payment_type }).exec();
-    console.log(payment_type, "payment_type"); //correct working
+    console.log(payment_type, "ASDASDasdasdas____++++++++");
+
+    // let payemnt_type_rslt = await Orders_model.find({ "Order_Details.order_Payemnt_type": payment_type }).exec();
+    // console.log(payment_type, "payment_type"); //correct working
     let searcher_aggregate = {
         "$search": {
             "index":
@@ -24,7 +26,7 @@ app.post('/orders_by_payment_type', async (req, res) => {
                 "must": [
                     {
                         "text": {
-                            "query": "fell",
+                            "query": payment_type,
                             "path": 'Order_Details.order_Payemnt_type',
                             "fuzzy": {}
                         }
@@ -36,6 +38,7 @@ app.post('/orders_by_payment_type', async (req, res) => {
         }
     };
     let results = await Orders_model.aggregate([searcher_aggregate])
+    // console.log(results.Order_Details.order_Payemnt_typets, "db search")
     console.log(results, "db search")
     res.send(results)
 });

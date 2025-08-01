@@ -5,29 +5,29 @@ import { useEffect, useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import Filtering_orders from './Filtering_orders';
 import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
+import { getting_data_by_payemny_type } from '@/Redux/Slices/order_by_pymnt_type';
 function Order_Main() {
 
   const Navigate = useNavigate()
   const [mnth, set_mnth] = useState("")
   const [orders_payment_type, set_orders_by_payment_type] = useState("")
-  console.log(orders_payment_type, "asdasdasd");
-
   const paragraphs = [
     {
       Payment_method: "COD Drders ",
       Type: "Cod",
-      Route: 'Cod_payments'
+      Route: 'Orders_by_pyment_type'
     },
     {
       Payment_method: "Full Online Payments Orders",
       Type: "Full",
-      Route: 'Full_payments'
+      Route: 'Orders_by_pyment_type'
 
     },
     {
       Payment_method: "Advacne Online Payments Orders",
       Type: "Advanced",
-      Route: 'less_payments'
+      Route: 'Orders_by_pyment_type'
 
     }
   ]
@@ -37,6 +37,8 @@ function Order_Main() {
     "May", "June", "July", "August",
     "September", "October", "November", "December"
   ];
+
+  const dispact_data_by_pyMethod = useDispatch()
   function handleClick(orders_by_payment_type) {
     // alert(orders_payment_type)
     axios.post('http://localhost:4000/orders_by_payment_type', {
@@ -44,20 +46,18 @@ function Order_Main() {
     })
       .then((res) => {
 
-        const pyment_type = res.data;
-        console.log(pyment_type, "tetsing");
-        set_orders_by_payment_type(pyment_type)
-
-        // console.log(orders_by_payment_type);
+        const payment_typed_data = res.data;
+        console.log(payment_typed_data, "py-typed data in forntedn");
+        set_orders_by_payment_type(payment_typed_data)
+        dispact_data_by_pyMethod(getting_data_by_payemny_type(payment_typed_data))
 
       }).catch((err) => {
         console.log(err, "err");
 
       })
   }
-  useEffect(() => {
-    // alert("asdasdasdasdasdasdasdsad");
 
+  useEffect(() => {
     let date = new Date()
     let mnth = date.getMonth()
     for (let index = 0; index < months.length; index++) {
@@ -70,7 +70,7 @@ function Order_Main() {
       }
 
     }
-
+    // handleClick(orders_by_payment_type)
   }, [])
   let months_seletore = (v, i) => {
     set_mnth(v)

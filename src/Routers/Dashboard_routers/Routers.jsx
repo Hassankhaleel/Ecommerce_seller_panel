@@ -10,9 +10,10 @@ import Analytics from '../../Dashboard_components/Analytics/Analytics'
 import OnlineCompo from '../../Dashboard_components/Dashboard_Sirder2/Sider2_tailwinds_components/OnlineCompo'
 import CodCompo from '../../Dashboard_components/Dashboard_Sirder2/Sider2_tailwinds_components/CodCompo'
 import Order_Main from '@/Dashboard_components/Orders/Order_Main'
-import COD_Orders from '@/Dashboard_components/Orders/COD_Orders'
+import COD_Orders from '@/Dashboard_components/Orders/Order_by_pymnt_type'
 import Full_paid_orders from '@/Dashboard_components/Orders/Full_paid_orders'
 import Half_paid_orders from '@/Dashboard_components/Orders/Half_paid_orders'
+import Order_by_pymnt_type from '@/Dashboard_components/Orders/Order_by_pymnt_type'
 
 function Routers() {
     return (
@@ -27,10 +28,7 @@ function Routers() {
                                 <Route path='Cod' element={<CodCompo />} />
                             </Route>
                             <Route path='Orders_Dipatching' element={< Order_Main />}>
-                                <Route path='Cod_payments' element={<COD_Orders />} />
-
-                                <Route path='Full_payments' element={<Full_paid_orders />} />
-                                <Route path='less_payments' element={<Half_paid_orders />} />
+                                <Route path='Orders_by_pyment_type' element={<Order_by_pymnt_type />} />
                             </Route>
                             <Route path='Analytics' element={< Analytics />} />
                         </Route>
