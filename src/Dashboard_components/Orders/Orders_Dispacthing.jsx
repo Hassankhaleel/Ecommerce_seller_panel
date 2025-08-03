@@ -7,7 +7,9 @@ import { useSelector } from 'react-redux';
 
 function Orders_Dispacthing(orde_data) {
     // const [dlt_order, set_order_dlt] = useState()
-    const [order_recieved_data, set_order_recieved_data] = useState([])
+    const [order_recieved_data, set_order_recieved_data] = useState([{}])
+    console.log(order_recieved_data.length);
+
     const [order_acceptance, set_order_accepted] = useState(false)
     const [stored_status, store_delievery_status] = useState({
         order_status: false
@@ -46,9 +48,13 @@ function Orders_Dispacthing(orde_data) {
             Disable: true
         }])
 
-    const data_by_pyMethod = useSelector((state) => state.OrderPymntTypeSlice.value)
-
-    console.log(data_by_pyMethod.length);
+    const data_by_pyMethod = useSelector((state) => {
+        return state.OrderPymntTypeSlice?.value?.payment_typed_data ?? []
+    })
+    const data_by_filted_status = useSelector((state) => {
+        return state.OrderPymntTypeSlice?.value?.filter_stater ?? []
+    })
+    console.log(data_by_filted_status);
 
     return (
         <>
@@ -110,7 +116,18 @@ function Orders_Dispacthing(orde_data) {
                                 </tr>
                             </thead>
                             <tbody>
+                                {
+                                    data_by_pyMethod.map((val, i) => {
+                                        return (
+                                            <>
+                                                <h1>
 
+                                                    asd
+                                                </h1>
+                                            </>
+                                        )
+                                    })
+                                }
                             </tbody>
                         </table>
                     </div>

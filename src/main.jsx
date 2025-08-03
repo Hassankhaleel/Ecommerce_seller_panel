@@ -8,12 +8,14 @@ import './index.css'
 import App from './App.jsx'
 import { BrowserRouter, Route, Router } from 'react-router-dom'
 import Routers from './Routers/Dashboard_routers/Routers.jsx'
-import { sotre } from "./Redux/Rediux_main";
-
+import { persistor, sotre } from "./Redux/Rediux_main";
+// import { persistor } from "./Redux/Redux_persist/Main";
 import { Provider } from 'react-redux'
+import { PersistGate } from "redux-persist/integration/react";
 createRoot(document.getElementById('root')).render(
 
   <Provider store={sotre}>
+    {/* <PersistGate loading={null} persistor={persistor} > */}
     <Routers>
       <StrictMode>
         <Theme>
@@ -21,7 +23,8 @@ createRoot(document.getElementById('root')).render(
         </Theme>
       </StrictMode>,
     </Routers>
-  </Provider>
+    {/* </PersistGate > */}
+  </Provider >
 
 
 )

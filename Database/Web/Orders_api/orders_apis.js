@@ -13,6 +13,9 @@ app.use(cors({
 app.use(express.json())
 // ----APis for getting orders base on payemnt_type
 app.post('/orders_by_payment_type', async (req, res) => {
+    // let status_filter = req.query
+    // console.log(status_filter, "adasdasdasdasdasdasdasdasdas");
+
     let payment_type = req.body.Order_payment_type
     console.log(payment_type, "ASDASDasdasdas____++++++++");
 
@@ -23,17 +26,24 @@ app.post('/orders_by_payment_type', async (req, res) => {
             "index":
                 'order_search',
             "compound": {
-                "must": [
+                "filter": [
                     {
-                        "text": {
+                        "term": {
                             "query": payment_type,
                             "path": 'Order_Details.order_Payemnt_type',
-                            "fuzzy": {}
                         }
                     },
 
                 ],
+                "must": [
+                    {
+                        "text": {
+                            "query": status_filter,
+                            path: "Order_Details.order_current_status"
+                        }
 
+                    }
+                ]
             }
         }
     };

@@ -12,6 +12,7 @@ function Order_Main() {
   const Navigate = useNavigate()
   const [mnth, set_mnth] = useState("")
   const [orders_payment_type, set_orders_by_payment_type] = useState("")
+  const [Order_payment_type, set_Order_payment_type] = useState("Cod")
   const paragraphs = [
     {
       Payment_method: "COD Drders ",
@@ -31,7 +32,7 @@ function Order_Main() {
 
     }
   ]
-  const [activeIndex, setActiveIndex] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(0);
   const months = [
     "January", "February", "March", "April",
     "May", "June", "July", "August",
@@ -39,10 +40,18 @@ function Order_Main() {
   ];
 
   const dispact_data_by_pyMethod = useDispatch()
-  function handleClick(orders_by_payment_type) {
-    // alert(orders_payment_type)
-    axios.post('http://localhost:4000/orders_by_payment_type', {
-      Order_payment_type: orders_by_payment_type
+  function handleClick(py_type) {
+    set_Order_payment_type(py_type)
+
+  }
+  const status_filters = useSelector((state) => {
+    return state.OrderPymntTypeSlice?.value?.filter_stater ?? []
+  })
+  console.log(status_filters);
+  useEffect(() => {
+    alert(Order_payment_type)
+    axios.post(`http://localhost:4000/orders_by_payment_type`, {
+      Order_payment_type: Order_payment_type
     })
       .then((res) => {
 
@@ -55,7 +64,8 @@ function Order_Main() {
         console.log(err, "err");
 
       })
-  }
+  }, [Order_payment_type])
+
 
   useEffect(() => {
     let date = new Date()
@@ -70,7 +80,8 @@ function Order_Main() {
       }
 
     }
-    // handleClick(orders_by_payment_type)
+
+    // ick(orders_payment_type)
   }, [])
   let months_seletore = (v, i) => {
     set_mnth(v)
@@ -131,32 +142,37 @@ function Order_Main() {
         {/* -----------------BOXES PAYMENT NAVBAR----------------- */}
         <div className='flex gap-x-30 mb-5 justify-start items-center   '>
           {paragraphs.map((text, index) => (
-            <div
-              key={index}
-              className="relative  pb-2 cursor-pointer w-max"
-              onClick={() => {
-                setActiveIndex(index)
-                Navigate(text.Route)
-                // set_orders_by_payment_type(text.Payment_method)
-                handleClick(text.Type)
-              }}
-            >
-              <p className="font-light opacity-70 font-[Poppins] text-[18px]">{text.Payment_method}</p>
-              {/* Expanding underline */}
-              <span
-                className={`absolute left-0 bottom-0  h-[4px] bg-blue-500 transition-all duration-300 ${activeIndex === index ? "w-full" : "w-0"
-                  }`}
-              ></span>
-            </div>
+            // console.log(index, activeIndex)
+            <>
+              < div
+                key={index}
+                className="relative  pb-2 cursor-pointer w-max"
+                onClick={() => {
+                  setActiveIndex(index)
+                  Navigate(text.Route)
+                  // set_orders_by_payment_type(text.Payment_method)
+                  handleClick(text.Type)
+                }}
+              >
+                <p className="font-light opacity-70 font-[Poppins] text-[18px]">{text.Payment_method}</p>
+                {/* Expanding underline */}
+                <span
+
+                  className={`absolute left-0 bottom-0  h-[4px] bg-blue-500 transition-all duration-300 ${activeIndex === index ? "w-full" : "w-0"
+                    }`}
+                ></span>
+              </div>
+            </>
+
           ))}
         </div>
         <div>
 
 
         </div>
-      </div>
+      </div >
       {/* --FILTERS END */}
-      <Outlet />
+      < Outlet />
 
     </>
 
