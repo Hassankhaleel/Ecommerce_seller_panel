@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { filter_dispatcer_redux } from '@/Redux/Slices/order_by_pymnt_type';
 
 function Filtering_orders() {
-    const [filters, set_filters] = useState("New Order")
+    const [filters, set_filters] = useState("New Orders")
     const filter_btn = [
 
         {
@@ -17,15 +17,15 @@ function Filtering_orders() {
             state: "active",
         },
         {
-            text: "ACCEPTED Orders",
+            text: "Accepted Orders",
             state: "active",
         },
         {
-            text: "ON-PACKING Orders",
+            text: "Packed Orders",
             state: "active",
         },
         {
-            text: "OUT Orders",
+            text: "Out Orders",
             state: "active",
         },
         {
@@ -59,8 +59,9 @@ function Filtering_orders() {
                                             onClick={() => {
                                                 api_caller(v.text)
                                             }}
+                                            style={{ backgroundColor: v.text == filters ? "#146EB4" : "" }}
                                             key={i} className='bg-[#E6E6E6] focus:bg-[#146EB4] focus:text-white shadow tracking-wider font-[Poppins] text-[10px] px-4 py-1.5 opacity-80 rounded-full   min-w-fit '>
-                                            {v.text} (54)
+                                            {v.text}
                                         </button>
                                     </>
                                 )

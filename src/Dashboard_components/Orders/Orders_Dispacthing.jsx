@@ -51,10 +51,7 @@ function Orders_Dispacthing(orde_data) {
     const data_by_pyMethod = useSelector((state) => {
         return state.OrderPymntTypeSlice?.value?.payment_typed_data ?? []
     })
-    const data_by_filted_status = useSelector((state) => {
-        return state.OrderPymntTypeSlice?.value?.filter_stater ?? []
-    })
-    console.log(data_by_filted_status);
+
 
     return (
         <>
@@ -116,18 +113,38 @@ function Orders_Dispacthing(orde_data) {
                                 </tr>
                             </thead>
                             <tbody>
-                                {
-                                    data_by_pyMethod.map((val, i) => {
-                                        return (
-                                            <>
-                                                <h1>
+                                {data_by_pyMethod && data_by_pyMethod.length > 0 ? (
+                                    data_by_pyMethod.map((order, i) => {
+                                        const details = order.Order_Details || {};
+                                        const orderer = order.Orderer_Details || {};
 
-                                                    asd
-                                                </h1>
-                                            </>
-                                        )
+                                        return (
+                                            <tr key={details.order_id || i} className="border-b">
+                                                <td className="px-4 py-2">{details.order_Date}</td>
+                                                <td className="px-4 py-2">{details.order_id}</td>
+                                                <td className="px-4 py-2">{orderer.orderer_Number}</td>
+                                                <td className="px-4 py-2">{details.order_Payemnt_type}</td>
+                                                <td className="px-4 py-2">{details.order_Discount}</td>
+                                                <td className="px-4 py-2">{details.order_Amount}</td>
+                                                <td className="px-4 py-2">{details.order_current_status}</td>
+                                                <td className="px-4 py-2">
+                                                    <button
+                                                        onClick={() => onCancel && onCancel(details.order_id)}
+                                                        className="px-3 py-1 bg-red-600 text-white rounded hover:bg-red-700"
+                                                    >
+                                                        Cancel
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        );
                                     })
-                                }
+                                ) : (
+                                    <tr>
+                                        <td colSpan={8} className="px-4 py-6">
+                                            No orders found.
+                                        </td>
+                                    </tr>
+                                )}
                             </tbody>
                         </table>
                     </div>

@@ -47,12 +47,16 @@ function Order_Main() {
   const status_filters = useSelector((state) => {
     return state.OrderPymntTypeSlice?.value?.filter_stater ?? []
   })
-  console.log(status_filters);
+  console.log(typeof status_filters);
   useEffect(() => {
-    alert(Order_payment_type)
-    axios.post(`http://localhost:4000/orders_by_payment_type`, {
-      Order_payment_type: Order_payment_type
-    })
+    alert()
+    axios.post(
+      `http://localhost:4000/orders_by_payment_type`,
+      { Order_payment_type: Order_payment_type },
+      { params: { status_filters: status_filters } }
+
+
+    )
       .then((res) => {
 
         const payment_typed_data = res.data;
@@ -64,7 +68,7 @@ function Order_Main() {
         console.log(err, "err");
 
       })
-  }, [Order_payment_type])
+  }, [Order_payment_type, status_filters])
 
 
   useEffect(() => {
