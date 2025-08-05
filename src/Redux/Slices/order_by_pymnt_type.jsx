@@ -5,7 +5,8 @@ export const order_by_pymnt_type_SLICE = createSlice({
     initialState: {
         value: {
             payment_typed_data: [],
-            filter_stater: ""
+            filter_stater: "",
+            status_changer: ""
         }
     },
     reducers: {
@@ -16,8 +17,11 @@ export const order_by_pymnt_type_SLICE = createSlice({
         },
         filter_dispatcer_redux: (state, action) => {
             state.value.filter_stater = action.payload
+        },
+        status_changer_redux: (state, action) => {
+            state.value.status_changer = action.payload
         }
     }
 })
-export const { getting_data_by_payemny_type, filter_dispatcer_redux } = order_by_pymnt_type_SLICE.actions;
+export const { getting_data_by_payemny_type, filter_dispatcer_redux, status_changer_redux } = order_by_pymnt_type_SLICE.actions;
 export default order_by_pymnt_type_SLICE.reducer;
