@@ -15,15 +15,15 @@ import { PersistGate } from "redux-persist/integration/react";
 createRoot(document.getElementById('root')).render(
 
   <Provider store={sotre}>
-    {/* <PersistGate loading={null} persistor={persistor} > */}
-    <Routers>
-      <StrictMode>
-        <Theme>
-          <App />
-        </Theme>
-      </StrictMode>,
-    </Routers>
-    {/* </PersistGate > */}
+    <PersistGate loading={null} persistor={persistor} >
+      <Routers>
+        <StrictMode>
+          <Theme>
+            <App />
+          </Theme>
+        </StrictMode>,
+      </Routers>
+    </PersistGate >
   </Provider >
 
 

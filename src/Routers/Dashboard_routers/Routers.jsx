@@ -29,6 +29,7 @@ function Routers() {
                             </Route>
                             <Route path='Orders_Dipatching' element={< Order_Main />}>
                                 <Route path='Orders_by_pyment_type' element={<Order_by_pymnt_type />} />
+                                <Route path='' element={<Orders_Dispacthing />} />
                             </Route>
                             <Route path='Analytics' element={< Analytics />} />
                         </Route>

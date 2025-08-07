@@ -14,16 +14,9 @@ app.use(express.json())
 // ----APis for getting orders base on payemnt_type
 app.post('/orders_by_payment_type', async (req, res) => {
     let status_filters = req.query.status_filters
+    console.log(status_filters, "status_____________filter");
 
     let payment_type = req.body.Order_payment_type
-    // console.log(status_filter, "STATUS FILTERS");
-    // console.log(req.body, "payment types");
-
-    // console.log(status_filter, "adasdasdasdasdasdasdasdasdas");
-
-
-    // let payemnt_type_rslt = await Orders_model.find({ "Order_Details.order_Payemnt_type": payment_type }).exec();
-    // console.log(payment_type, "payment_type"); //correct working
     let searcher_aggregate = {
         $search: {
             index: 'order_search',
@@ -48,6 +41,7 @@ app.post('/orders_by_payment_type', async (req, res) => {
                 ]
             }
         }
+
     };
 
     let results = await Orders_model.aggregate([searcher_aggregate])
@@ -55,8 +49,27 @@ app.post('/orders_by_payment_type', async (req, res) => {
     console.log(results, "db search")
     res.send(results)
 });
-// GETTING ORDER BY PAYMENT TYPE
+////--------UPDATEING ORDERs DELIEVEY STATUS at all -----
+app.patch('/update_order_status', async (req, res) => {
+    const { ids, status_to_be_change } = req.body;
+    console.log(ids, status_to_be_change);
 
+
+    try {
+        const updated = await Orders_model.updateMany(
+            { _id: { $in: ids } },
+            { $set: { "Order_Details.order_current_status": status_to_be_change } }
+        );
+        console.log(updated);
+
+
+        if (!updated) return res.status(404).json({ message: "Order not found" });
+
+        res.json({ message: "Status updated", updated });
+    } catch (error) {
+        res.status(500).json({ message: "Error updating status", error: error.message });
+    }
+});
 
 app.post('/order_confirmed', async (req, res) => {
     const data = req.body;

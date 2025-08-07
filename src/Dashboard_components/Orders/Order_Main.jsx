@@ -6,7 +6,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import Filtering_orders from './Filtering_orders';
 import axios from 'axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { getting_data_by_payemny_type } from '@/Redux/Slices/order_by_pymnt_type';
+import { getting_data_by_payemny_type, payment_type_reducer, status_changer_redux, status_updater_reduxx } from '@/Redux/Slices/order_by_pymnt_type';
 function Order_Main() {
 
   const Navigate = useNavigate()
@@ -31,7 +31,7 @@ function Order_Main() {
       Route: 'Orders_by_pyment_type'
 
     }
-  ]
+  ]///---this will show in top when first timeuser clicked
   const [activeIndex, setActiveIndex] = useState(0);
   const months = [
     "January", "February", "March", "April",
@@ -40,26 +40,41 @@ function Order_Main() {
   ];
 
   const dispact_data_by_pyMethod = useDispatch()
+
+  const dispatch_ids = useDispatch()
   function handleClick(py_type) {
     set_Order_payment_type(py_type)
 
   }
+
   const status_filters = useSelector((state) => {
+    console.log(state);
+
     return state.OrderPymntTypeSlice?.value?.filter_stater ?? []
   })
-  console.log(typeof status_filters);
+  console.log(status_filters);
+
+
   useEffect(() => {
-    alert()
+    // alert()
     axios.post(
       `http://localhost:4000/orders_by_payment_type`,
-      { Order_payment_type: Order_payment_type },
-      { params: { status_filters: status_filters } }
+      {
+        Order_payment_type: Order_payment_type,
+
+      },
+      {
+        params: { status_filters: status_filters.value }
+      }
 
 
     )
       .then((res) => {
 
         const payment_typed_data = res.data;
+        ///STORING IDs TO CHANGE THERI STATUS BASE OID ///EFFIECNT WAY
+        let ids = payment_typed_data.map(data => data._id)
+        dispatch_ids(status_updater_reduxx(ids))
         console.log(payment_typed_data, "py-typed data in forntedn");
         set_orders_by_payment_type(payment_typed_data)
         dispact_data_by_pyMethod(getting_data_by_payemny_type(payment_typed_data))
@@ -68,9 +83,15 @@ function Order_Main() {
         console.log(err, "err");
 
       })
+    dispact_data_by_pyMethod(payment_type_reducer(orders_payment_type))
   }, [Order_payment_type, status_filters])
+  // --------UPDATE STAUSBASE ON IDS--------
+
+  // console.log(status_to_be_changed, "status to be hcnaged")
 
 
+
+  //---MONTHS EFFECTS=---
   useEffect(() => {
     let date = new Date()
     let mnth = date.getMonth()
