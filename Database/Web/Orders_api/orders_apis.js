@@ -11,12 +11,12 @@ app.use(cors({
     methods: ["GET", "POST", "PUT ", "DELETE", "PATCH"],
 }));
 app.use(express.json())
-// ----APis for getting orders base on payemnt_type
+// ----APi for getting orders base on payemnt_type
 app.post('/orders_by_payment_type', async (req, res) => {
-    let status_filters = req.query.status_filters
-    console.log(status_filters, "status_____________filter");
+    // let status_filters = req.query.status_filters
 
-    let payment_type = req.body.Order_payment_type
+    let info = req.body
+    console.log(info);
     let searcher_aggregate = {
         $search: {
             index: 'order_search',
@@ -25,7 +25,7 @@ app.post('/orders_by_payment_type', async (req, res) => {
                     // Facet 1: payment type = COD
                     {
                         term: {
-                            query: payment_type,
+                            query: info.payment_type,
                             path: "Order_Details.order_Payemnt_type",
                         }
                     },
@@ -33,7 +33,7 @@ app.post('/orders_by_payment_type', async (req, res) => {
                     // Facet 2: OR logic for statusesphrase: {
                     {
                         phrase: {
-                            query: status_filters,
+                            query: info.payment_filter,
                             path: "Order_Details.order_current_status"
                         }
                     }
@@ -46,13 +46,13 @@ app.post('/orders_by_payment_type', async (req, res) => {
 
     let results = await Orders_model.aggregate([searcher_aggregate])
     // console.log(results.Order_Details.order_Payemnt_typets, "db search")
-    console.log(results, "db search")
+    console.log(results, "db data")
     res.send(results)
 });
 ////--------UPDATEING ORDERs DELIEVEY STATUS at all -----
 app.patch('/update_order_status', async (req, res) => {
     const { ids, status_to_be_change } = req.body;
-    console.log(ids, status_to_be_change);
+    console.log("status_to_be_change", status_to_be_change);
 
 
     try {
@@ -65,7 +65,7 @@ app.patch('/update_order_status', async (req, res) => {
 
         if (!updated) return res.status(404).json({ message: "Order not found" });
 
-        res.json({ message: "Status updated", updated });
+        res.send({ message: "Status updated", updated });
     } catch (error) {
         res.status(500).json({ message: "Error updating status", error: error.message });
     }
