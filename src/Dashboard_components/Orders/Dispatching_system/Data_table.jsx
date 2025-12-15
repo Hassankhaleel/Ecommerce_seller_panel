@@ -10,6 +10,7 @@ function Data_table({ loader }) {
     })
 
     useEffect(() => {
+        alert("order tranfered")
         console.log("Redux state updated:", Get_payment_typed_data);
     }, [Get_payment_typed_data]);
 

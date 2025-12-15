@@ -10,6 +10,7 @@ import OnlineCompo from '../../Dashboard_components/Dashboard_Sirder2/Sider2_tai
 import CodCompo from '../../Dashboard_components/Dashboard_Sirder2/Sider2_tailwinds_components/CodCompo'
 
 import Main_comp from '@/Dashboard_components/Orders/Dispatching_system/Main_comp'
+import Products_listings from '@/Dashboard_components/Product_pages/Product_Crud/Products_listings'
 function Routers() {
     return (
         <>
@@ -22,7 +23,8 @@ function Routers() {
                                 <Route path='Online' element={<OnlineCompo />} />
                                 <Route path='Cod' element={<CodCompo />} />
                             </Route>
-                            <Route path='Orders_Dipatching' element={<Main_comp />} />
+                            <Route path='Orders_Dispatching' element={<Main_comp />} />
+                            <Route path='Products' element={<Products_listings />} />
                             <Route path='Analytics' element={< Analytics />} />
                         </Route>
                     </Route >

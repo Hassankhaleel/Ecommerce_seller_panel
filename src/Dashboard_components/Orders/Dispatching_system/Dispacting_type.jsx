@@ -1,13 +1,16 @@
 import { Button } from '@radix-ui/themes'
 import React, { useEffect, useState } from 'react'
-import { Get_PaymentType_Data_api } from '../Dispatching_apis/DIspatcing_system_apis'
+import { DIspatch_status_updater_api, Get_PaymentType_Data_api } from '../Dispatching_apis/DIspatcing_system_apis'
 import { useDispatch } from 'react-redux';
 import { Get_PaymentType_Data_Redux } from '@/Redux/Slices/Dispacting_system_redux';
 function Dispacting_type({ paymentType }) {
-    console.log(paymentType);
+    // console.log(paymentType);
 
     const [filter, set_filters] = useState("New Orders")//text
-    const [dispatch_status, set_dispatch_status] = useState("Nothing")//text
+
+    const [ids, set_ids] = useState()//text
+    const [dispatch_status, set_dispatch_status] = useState("Accept Orders")//text
+    const [referesher, set_referesher] = useState()//text
 
     const filter_btn = [
 
@@ -47,14 +50,20 @@ function Dispacting_type({ paymentType }) {
         }
     ]
     const payment_TypeData_dispatcher = useDispatch()
-    const api_handler = () => {
+    const api_handler = (filter) => {
         console.log(filter)
-        console.log("handler called")
         // set_loader(true); // ✅ Start loading before API call
         Get_PaymentType_Data_api({ type: paymentType, filter: filter })
             .then((data) => {
-                console.log(data);
-                payment_TypeData_dispatcher(Get_PaymentType_Data_Redux(data))
+                let get_ids = data.data.map((v, i) => {
+                    // console.log(v._id, "ids");
+                    return v._id
+
+
+                })
+
+                set_ids(get_ids)
+                payment_TypeData_dispatcher(Get_PaymentType_Data_Redux(data.data))
             })
             .catch((err) => {
                 console.log(err);
@@ -62,12 +71,23 @@ function Dispacting_type({ paymentType }) {
             .finally(() => {
                 // set_loader(false); // ✅ Stop loading after API finishes
             })
+
     }
-    useEffect(() => {
-        api_handler()
 
-    }, [paymentType])
 
+
+    const status_changer_handler = () => {
+        DIspatch_status_updater_api(dispatch_status, ids)
+            .then((res) => {
+                console.log(res.data);
+                api_handler(filter)
+                console.log(filter);
+
+            }).catch((err) => {
+                console.log(err);
+
+            })
+    }
 
     return (
         <>
@@ -100,9 +120,29 @@ function Dispacting_type({ paymentType }) {
 
 
                     </div>
-                    <button className='bg-[#000000] text-white shadow tracking-wider font-[Poppins] text-[15px] px-4 py-2 opacity-80   min-w-fit '>
-                        {dispatch_status}
-                    </button>
+                    {
+                        referesher ? <>
+                            <button
+                                onClick={() => {
+                                    set_referesher(!referesher)
+                                    status_changer_handler()
+
+                                }}
+                                className='bg-[#d30700] text-white shadow tracking-wider font-[Poppins] text-[15px] px-4 py-2 opacity-80   min-w-fit '
+                            >Refresh page</button>
+                        </> : <>
+                            <button
+                                onClick={() => {
+                                    status_changer_handler()
+                                    set_referesher(!referesher)
+                                }}
+                                className='bg-[#000000] text-white shadow tracking-wider font-[Poppins] text-[15px] px-4 py-2 opacity-80   min-w-fit '>
+
+                                {dispatch_status}
+
+                            </button>
+                        </>
+                    }
                 </div>
 
             </div >
