@@ -1,18 +1,13 @@
 import express from "express"
 import { Mongoose } from "mongoose"
-import Orders_model from "../databse.js"
-import deliever_status_Api from "./Delievery_status_Apis.js"
-import cors from "cors"
-import { log } from "node:console"
-import order_schema from "./orders_schema.js"
 const app = express()
-app.use(cors({
-    origin: "http://localhost:5173", // allow React frontend
-    methods: ["GET", "POST", "PUT ", "DELETE", "PATCH"],
-}));
+import { Orders_model } from "../databse.js"
+const order_api_router = express.Router()
+
 app.use(express.json())
+
 // ----APi for getting orders base on payemnt_type
-app.post('/orders_by_payment_type', async (req, res) => {
+order_api_router.post('/orders_by_payment_type', async (req, res) => {
     // let status_filters = req.query.status_filters
 
     let info = req.body
@@ -50,15 +45,13 @@ app.post('/orders_by_payment_type', async (req, res) => {
     res.send(results)
 });
 ////--------UPDATEING ORDERs DELIEVEY STATUS at all -----
-app.patch('/update_order_status', async (req, res) => {
-    const { ids, status_to_be_change } = req.body;
-    console.log("status_to_be_change", status_to_be_change);
-
-
+order_api_router.patch('/update_order_status', async (req, res) => {
+    const { ids, payment_filter_to_Be_change } = req.body;
+    console.log(ids, payment_filter_to_Be_change);
     try {
         const updated = await Orders_model.updateMany(
             { _id: { $in: ids } },
-            { $set: { "Order_Details.order_current_status": status_to_be_change } }
+            { $set: { "Order_Details.order_current_status": payment_filter_to_Be_change } }
         );
         console.log(updated);
 
@@ -71,14 +64,14 @@ app.patch('/update_order_status', async (req, res) => {
     }
 });
 
-app.post('/order_confirmed', async (req, res) => {
+order_api_router.post('/order_confirmed', async (req, res) => {
     const data = req.body;
     await Orders_model.create(data)
     res.send(data)
 
 })
 // DELTERING THE ORDER THAT ARE NOT-CONFIRMED.
-app.delete('/order_delete', async (req, res) => {
+order_api_router.delete('/order_delete', async (req, res) => {
     const id = req.body.order_id
     const deleted_order = await Orders_model.deleteOne({ 'Order_Details.order_id': id })
     console.log(deleted_order);
@@ -87,4 +80,4 @@ app.delete('/order_delete', async (req, res) => {
 
 })
 
-app.listen(4000, () => console.log("listening local 400"))
+export default order_api_router;

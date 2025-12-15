@@ -10,8 +10,6 @@ export const Dispacting_system_redux_SLice = createSlice({
     },
     reducers: {
         Get_PaymentType_Data_Redux: (state, action) => {
-            console.log(action.payload);
-
             state.value.Get_PaymentType_Data = action.payload;
 
         },

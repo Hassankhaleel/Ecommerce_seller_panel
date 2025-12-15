@@ -13,7 +13,11 @@ function Pages() {
             Icon: <i className="fa-solid opacity-85 text-white fa-sack-dollar"></i>
         },
         {
-            Title: "Orders_Dipatching",
+            Title: "Orders_Dispatching",
+            Icon: <i className="fa-solid opacity-85 text-white fa-calendar-check"></i>
+        },
+        {
+            Title: "Products",
             Icon: <i className="fa-solid opacity-85 text-white fa-calendar-check"></i>
         },
         {
